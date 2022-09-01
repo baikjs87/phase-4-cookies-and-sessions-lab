@@ -7,16 +7,16 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    session[:page_views] ||= 0
+    count = session[:page_views] ||= 0
     article = Article.find(params[:id])
-    render json: article
-    
-    session[:page_views] += 1
-    # byebug
-    # if session[:page_views] > 3
-    #   render json: unauthorized
-    #   session[:page_views] = 0
-    # end
+    count += 1
+    if count <= 3
+      render json: article
+      byebug
+    elsif count > 3
+      render json: unauthorized
+      # count = 0
+    end
 
   end
 
