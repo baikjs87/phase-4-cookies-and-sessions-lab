@@ -7,15 +7,13 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    count = session[:page_views] ||= 0
+    session[:page_views] ||= 0
     article = Article.find(params[:id])
-    count += 1
-    if count <= 3
+    session[:page_views] += 1
+    if session[:page_views] <= 3
       render json: article
-      byebug
-    elsif count > 3
-      render json: unauthorized
-      # count = 0
+    elsif session[:page_views] > 3
+      unauthorized
     end
 
   end
@@ -27,7 +25,7 @@ class ArticlesController < ApplicationController
   end
 
   def unauthorized
-    render json: { errors: "Maximum pageview limit reached" }, status: :unauthorized
+    render json: { error: "Maximum pageview limit reached" }, status: :unauthorized
   end
 
 end
